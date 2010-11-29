@@ -46,7 +46,7 @@ class Model_Auth_User extends Jelly_Model
 		));
 		$meta->field('email', 'email', array('unique' => TRUE));
 		$meta->field('logins', 'integer', array('default' => 0));
-		$meta->field('last_logins', 'timestamp');
+		$meta->field('last_login', 'timestamp');
 		
 		// Relationships
 		$meta->field('tokens', 'hasmany', array('foreign' => 'user_token'));
