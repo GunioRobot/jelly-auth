@@ -11,7 +11,7 @@ class Model_Auth_Role extends Jelly_Model
 	
 	public static function initialize(Jelly_Meta $meta)
 	{
-		$meta->name_key('name')
+		$meta->name_key('name');
 		
 		// Fields
 		$meta->field('id', 'primary');

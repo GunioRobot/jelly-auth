@@ -36,7 +36,7 @@ class Model_Auth_User extends Jelly_Model
 		$meta->field('password_confirm', 'password', array(
 			'in_db' => FALSE,
 			'callbacks' => array(
-				'matches' => array('Model_Auth_User', '_check_password_matches')
+				array(array(':model', '_check_password_matches'))
 			),
 			'rules' => array(
 				'not_empty' => NULL,
@@ -63,10 +63,12 @@ class Model_Auth_User extends Jelly_Model
 	{
 		$auth = Auth::instance();
 		
-		if ($array['password'] !== $array[$field])
+		$salt = $auth->find_salt($array['password']);
+		
+		if ($array['password'] !== $auth->hash_password($array[$field], $salt))
 		{
-			// Re-use the error messge from the 'matches' rule in Validate
-			$array->error($field, 'matches', array('param1' => 'password'));
+			// Re-use the error message from the 'matches' rule in Validate
+			$array->error($field, 'matches', array('param1', 'password'));
 		}
 	}
 	
