@@ -1,7 +1,7 @@
-<?php defined('SYSPATH') or die ('No direct script access.');
-/**
- * Jelly Auth Role Model
- * @package Jelly Auth
- * @author 	Israel Canasa
- */
-class Model_Role extends Model_Auth_Role {}
+<?php defined('SYSPATH') or die('No direct access allowed.');
+
+class Model_Role extends Model_Auth_Role {
+
+	// This class can be replaced or extended
+
+} // End Role Model
