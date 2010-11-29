@@ -1,17 +1,17 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-
 /**
- *  Auth Jelly driver.
+ *  Jelly Auth driver.
  *
  * @package    Jelly Auth
  * @author     Israel Canasa
+ * @author     Thomas Menga
  */
 class Auth_Jelly extends Auth {
 
 	/**
 	 * Checks if a session is active.
 	 *
-	 * @param   string   role name
+	 * @param   mixed    role name string or array with role names
 	 * @param   array    collection of role names
 	 * @return  boolean
 	 */
@@ -20,15 +20,15 @@ class Auth_Jelly extends Auth {
 		$status = FALSE;
 
 		// Get the user from the session
-		$user = $this->_session->get($this->_config['session_key']);
-
+		$user = $this->get_user();	
+		
 		if ( ! is_object($user))
 		{
 			// Attempt auto login
 			if ($this->auto_login())
 			{
 				// Success, get the user back out of the session
-				$user = $this->_session->get($this->_config['session_key']);
+				$user = $user->get_user();
 			}
 		}
 
@@ -46,7 +46,7 @@ class Auth_Jelly extends Auth {
 					foreach ($role as $role_iteration)
 					{
 						// If the user doesn't have the role
-						if( ! $user->has_role($role_iteration))
+						if ( ! $user->has_role($role_iteration))
 						{
 							// Set the status false and get outta here
 							$status = FALSE;
@@ -54,6 +54,7 @@ class Auth_Jelly extends Auth {
 						}
 					}
 				}
+				// Single role to check
 				else
 				{
 					// Check that the user has the given role
@@ -176,11 +177,13 @@ class Auth_Jelly extends Auth {
 			Cookie::delete('authautologin');
 			
 			// Clear the autologin token from the database
-			$token = Jelly::select('user_token')->where('token', '=', $token)->limit(1)->load();
+			$token = Jelly::query('user_token')
+				->where('token', '=', $token)->limit(1)->select();
 
 			if ($token->loaded() AND $logout_all)
 			{
-				Jelly::delete('user_token')->where('user_id', '=' ,$token->user->id)->execute();
+				Jelly::query('user_token')
+					->where('user_id', '=' ,$token->user->id)->delete();
 			}
 			elseif ($token->loaded())
 			{
@@ -261,7 +264,8 @@ class Auth_Jelly extends Auth {
 		if ( ! is_object($current) AND is_string($user))
 		{
 			// Load the user
-			$current = Jelly::select('user')->where('username', '=', $user)->limit(1)->execute();
+			$current = Jelly::query('user')
+				->where('username', '=', $user)->limit(1)->select();
 		}
 
 		if ($user instanceof Model_User AND $user->loaded()) 
@@ -272,4 +276,4 @@ class Auth_Jelly extends Auth {
 		return $current;
 	}
 
-} // End Auth_Jelly_Driver
+} // End Auth Jelly Driver

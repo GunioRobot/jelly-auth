@@ -1,57 +1,57 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 /**
  * Jelly Auth User Model
- * @package Jelly Auth
- * @author	Israel Canasa
+ *
+ * @package    Jelly Auth
+ * @author     Israel Canasa
+ * @author     Thomas Menga
  */
 class Model_Auth_User extends Jelly_Model
 {
+	
 	public static function initialize(Jelly_Meta $meta)
     {
-		$meta->name_key('username')
-			->sorting(array('username' => 'ASC'))
-			->fields(array(
-			'id' => new Field_Primary,
-			'username' => new Field_String(array(
-				'unique' => TRUE,
-				'rules' => array(
-						'not_empty' => NULL,
-						'max_length' => array(32),
-						'min_length' => array(3),
-						'regex' => array('/^[\pL_.-]+$/ui')
-					)
-				)),
-			'password' => new Field_Password(array(
-				'hash_with' => array(Auth::instance(), 'hash_password'),
-				'rules' => array(
-					'not_empty' => NULL,
-					'max_length' => array(50),
-					'min_length' => array(6)
+		$meta->name_key('username');
+		$meta->sorting(array('username' => 'ASC'));
+		
+		// Fields
+		$meta->field('id', 'primary');
+		$meta->field('username', 'string', array(
+			'unique' => TRUE,
+			'rules' => array(
+					'not_empty' => array(NULL),
+					'max_length' => array(32),
+					'min_length' => array(3),
+					'regex' => array('/^[\pL_.-]+$/ui')
 				)
 			)),
-			'password_confirm' => new Field_Password(array(
-				'in_db' => FALSE,
-				'callbacks' => array(
-					'matches' => array('Model_Auth_User', '_check_password_matches')
-				),
-				'rules' => array(
-					'not_empty' => NULL,
-					'max_length' => array(50),
-					'min_length' => array(6)
-				)
-			)),
-			'email' => new Field_Email(array(
-				'unique' => TRUE
-			)),
-			'logins' => new Field_Integer(array(
-				'default' => 0
-			)),
-			'last_login' => new Field_Timestamp,
-			'tokens' => new Field_HasMany(array(
-				'foreign' => 'user_token'
-			)),
-			'roles' => new Field_ManyToMany
 		));
+		$meta->field('password', 'password', array(
+			'hash_with' => array(Auth::instance(), 'hash_password'),
+			'rules' => array(
+				'not_empty' => array(NULL),
+				'max_length' => array(50),
+				'min_length' => array(6)
+			)
+		));
+		$meta->field('password_confirm', 'password', array(
+			'in_db' => FALSE,
+			'callbacks' => array(
+				'matches' => array('Model_Auth_User', '_check_password_matches')
+			),
+			'rules' => array(
+				'not_empty' => NULL,
+				'max_length' => array(50),
+				'min_length' => array(6)
+			)
+		));
+		$meta->field('email', 'email', array('unique' => TRUE));
+		$meta->field('logins', 'integer', array('default' => 0));
+		$meta->field('last_logins', 'timestamp');
+		
+		// Relationships
+		$meta->field('tokens', 'hasmany', array('foreign' => 'user_token'));
+		$meta->field('roles', 'manytomany');
     }
 
 	/**
@@ -106,4 +106,4 @@ class Model_Auth_User extends Jelly_Model
 		return FALSE;
 	}
 	
-} // End Model_Auth_User
+} // End Auth User Model

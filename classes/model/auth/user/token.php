@@ -1,33 +1,35 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 /**
- * Jelly Auth User Token Model
- * @package Jelly Auth
- * @author	Israel Canasa
+* Jelly Auth User Token Model
+*
+* @package    Jelly Auth
+* @author     Israel Canasa
+* @author     Thomas Menga
  */
 class Model_Auth_User_Token extends Jelly_Model
 {
+	
  	public static function initialize(Jelly_Meta $meta)
 	{
-		$meta->fields(array(
-				'id' => new Field_Primary,
-				'token' => new Field_String(array(
-					'unique' => TRUE,
-					'rules' => array(
-						'max_length' => array(32)
-					)
-				)),
-				'user' => new Field_BelongsTo,
-				'user_agent' => new Field_String,
-				'created' => new Field_Timestamp(array(
-					'auto_now_create' => TRUE,
-				)),
-				'expires' => new Field_Timestamp,
-			));
+		
+		// Fields
+		$meta->field('id', 'primary');
+		$meta->field('token', 'string', array(
+			'unique' => TRUE,
+			'rules' => array(
+				'max_length' => array(32)
+			)
+		));
+		$meta->field('user', 'belongsto');
+		$meta->field('user_agent', 'string');
+		$meta->field('created', 'timestamp', array('auto_now_create' => TRUE));
+		$meta->field('expires', 'timestamp');
+		
 		
 		if (mt_rand(1, 100) === 1)
 		{
 			// Do garbage collection
-			Jelly::delete('user_token')->where('expires', '<', time())->execute();
+			Jelly::query('user_token')->where('expires', '<', time())->delete();
 		}
 	}
 	
@@ -65,11 +67,12 @@ class Model_Auth_User_Token extends Jelly_Model
 			$token = text::random('alnum', 32);
 
 			// Make sure the token does not already exist
-			if( ! Jelly::select('user_token')->where('token', '=', $token)->count())
+			if( ! Jelly::query('user_token')->where('token', '=', $token)->count())
 			{
 				// A unique token has been found
 				return $token;
 			}
 		}
 	}
-} // End Model_Auth_User_Token
+	
+} // End Auth User Token Model
