@@ -19,12 +19,11 @@ class Model_Auth_User extends Jelly_Model
 		$meta->field('username', 'string', array(
 			'unique' => TRUE,
 			'rules' => array(
-					'not_empty' => array(NULL),
-					'max_length' => array(32),
-					'min_length' => array(3),
-					'regex' => array('/^[\pL_.-]+$/ui')
-				)
-			)),
+				'not_empty' => array(NULL),
+				'max_length' => array(32),
+				'min_length' => array(3),
+				'regex' => array('/^[\pL_.-]+$/ui')
+			)
 		));
 		$meta->field('password', 'password', array(
 			'hash_with' => array(Auth::instance(), 'hash_password'),
