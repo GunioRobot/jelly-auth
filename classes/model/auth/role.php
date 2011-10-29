@@ -8,11 +8,11 @@
  */
 class Model_Auth_Role extends Jelly_Model
 {
-	
+
 	public static function initialize(Jelly_Meta $meta)
 	{
 		$meta->name_key('name');
-		
+
 		// Fields
 		$meta->field('id', 'primary');
 		$meta->field('name', 'string', array(
@@ -22,7 +22,7 @@ class Model_Auth_Role extends Jelly_Model
 				'not_empty'  => array(NULL),
 			),
 		));
-		
+
 		// Relationships
 		$meta->field('description', 'text');
 		$meta->field('users', 'manytomany');

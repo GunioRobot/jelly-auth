@@ -20,8 +20,8 @@ class Auth_Jelly extends Auth {
 		$status = FALSE;
 
 		// Get the user from the session
-		$user = $this->get_user();	
-		
+		$user = $this->get_user();
+
 		if ( ! is_object($user))
 		{
 			// Attempt auto login
@@ -175,7 +175,7 @@ class Auth_Jelly extends Auth {
 		{
 			// Delete the autologin Cookie to prevent re-login
 			Cookie::delete('authautologin');
-			
+
 			// Clear the autologin token from the database
 			$token = Jelly::query('user_token')
 				->where('token', '=', $token)->limit(1)->select();
@@ -204,7 +204,7 @@ class Auth_Jelly extends Auth {
 	{
 		// Make sure we have a user object
 		$user = $this->_get_object($user);
-		
+
 		return $user->password;
 	}
 
@@ -252,14 +252,14 @@ class Auth_Jelly extends Auth {
 
 	/**
 	 * Convert a unique identifier string to a user object
-	 * 
+	 *
 	 * @param mixed $user
 	 * @return Model_User
 	 */
 	protected function _get_object($user)
 	{
 		static $current;
-		
+
 		//make sure the user is loaded only once.
 		if ( ! is_object($current) AND is_string($user))
 		{
@@ -268,7 +268,7 @@ class Auth_Jelly extends Auth {
 				->where('username', '=', $user)->limit(1)->select();
 		}
 
-		if ($user instanceof Model_User AND $user->loaded()) 
+		if ($user instanceof Model_User AND $user->loaded())
 		{
 			$current = $user;
 		}

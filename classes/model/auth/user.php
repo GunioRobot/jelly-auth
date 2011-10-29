@@ -8,12 +8,12 @@
  */
 class Model_Auth_User extends Jelly_Model
 {
-	
+
 	public static function initialize(Jelly_Meta $meta)
     {
 		$meta->name_key('username');
 		$meta->sorting(array('username' => 'ASC'));
-		
+
 		// Fields
 		$meta->field('id', 'primary');
 		$meta->field('username', 'string', array(
@@ -47,7 +47,7 @@ class Model_Auth_User extends Jelly_Model
 		$meta->field('email', 'email', array('unique' => TRUE));
 		$meta->field('logins', 'integer', array('default' => 0));
 		$meta->field('last_login', 'timestamp');
-		
+
 		// Relationships
 		$meta->field('tokens', 'hasmany', array('foreign' => 'user_token'));
 		$meta->field('roles', 'manytomany');
@@ -62,16 +62,16 @@ class Model_Auth_User extends Jelly_Model
 	public static function _check_password_matches(Validate $array, $field)
 	{
 		$auth = Auth::instance();
-		
+
 		$salt = $auth->find_salt($array['password']);
-		
+
 		if ($array['password'] !== $auth->hash_password($array[$field], $salt))
 		{
 			// Re-use the error message from the 'matches' rule in Validate
 			$array->error($field, 'matches', array('param1', 'password'));
 		}
 	}
-	
+
 	/**
 	 * Check if user has a particular role
 	 * @param mixed $role 	Role to test for, can be Model_Role object, string role name of integer role id
@@ -97,14 +97,14 @@ class Model_Auth_User extends Jelly_Model
 		}
 
 		foreach ($this->roles as $user_role)
-		{	
+		{
 			if ($user_role->{$key} === $val)
 			{
 				return TRUE;
 			}
 		}
-		
+
 		return FALSE;
 	}
-	
+
 } // End Auth User Model
